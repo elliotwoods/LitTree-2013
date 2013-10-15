@@ -9,6 +9,7 @@ float Thickness = 0.1f;
 float Phase = 0.0f;
 float4x4 TransformInverse;
 float2 R:TARGETSIZE;
+float4 cAmb <bool color=true;String uiname="Color";> = { 1.0f,1.0f,1.0f,1.0f };
 
 SamplerState linearSampler : IMMUTABLE
 {
@@ -31,7 +32,7 @@ float4 PSSphere(psInput input) : SV_Target
 	World.w = 1.0f;
 	World = mul(World, TransformInverse);
 	
-	return abs(length(World.xyz) - Radius) < Thickness;
+	return (abs(length(World.xyz) - Radius) < Thickness) * cAmb;
 }
 
 float4 PSSphereFill(psInput input) : SV_Target
@@ -42,7 +43,7 @@ float4 PSSphereFill(psInput input) : SV_Target
 	World.w = 1.0f;
 	World = mul(World, TransformInverse);
 	
-	return length(World.xyz) < Radius;
+	return (length(World.xyz) < Radius) * cAmb;
 }
 
 float4 PSSphereFillGradient(psInput input) : SV_Target
@@ -68,7 +69,7 @@ float4 PSSphereFillGradientNegative(psInput input) : SV_Target
 	float value = length(World.xyz) / Radius;
 	value = clamp(value, 0, 1);
 	value *= value < 1.0f;
-	return value;
+	return value * cAmb;
 }
 
 float4 PSPlane(psInput input) : SV_Target
@@ -78,7 +79,7 @@ float4 PSPlane(psInput input) : SV_Target
 	World.w = 1.0f;
 	World = mul(World, TransformInverse);
 	
-	return abs(length(World.y) - Radius) < Thickness;
+	return( abs(length(World.y) - Radius) < Thickness) * cAmb;
 }
 
 

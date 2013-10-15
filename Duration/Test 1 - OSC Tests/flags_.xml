@@ -1,0 +1,12 @@
+<keyframes>
+    <key>
+        <flag>Sphere</flag>
+        <time>00:00:02:908</time>
+        <value>0.425000012</value>
+    </key>
+    <key>
+        <flag>Plane</flag>
+        <time>00:00:07:440</time>
+        <value>0.550000012</value>
+    </key>
+</keyframes>
