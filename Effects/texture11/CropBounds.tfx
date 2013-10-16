@@ -1,0 +1,45 @@
+//@author: vux
+//@help: template for texture fx
+//@tags: texture
+//@credits: 
+
+Texture2D texture2d : PREVIOUS;
+float4x4 CropTransform;
+
+
+SamplerState linearSampler : IMMUTABLE
+{
+    Filter = MIN_MAG_MIP_LINEAR;
+    AddressU = Clamp;
+    AddressV = Clamp;
+};
+
+struct psInput
+{
+	float4 p : SV_Position;
+	float2 uv : TEXCOORD0;
+};
+
+
+float4 PS(psInput input) : SV_Target
+{
+	float4 c = texture2d.Sample(linearSampler,input.uv);
+	
+	float4 transformed = mul(c, CropTransform);
+	c.a *= abs(transformed.x) < 1.0f; 
+	c.a *= abs(transformed.y) < 1.0f; 
+	c.a *= abs(transformed.z) < 1.0f; 
+	c.rgb *= c.a > 0.5f;
+	return c;
+}
+
+technique10 Process
+{
+	pass P0
+	{
+		SetPixelShader(CompileShader(ps_4_0,PS()));
+	}
+}
+
+
+

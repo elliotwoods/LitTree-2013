@@ -29,6 +29,7 @@ struct vs2ps
     float4 PosWVP: SV_POSITION;
     int2 Index: TEXCOORD0;
 	float Size : PSIZE0;
+	float Discard : TEXCOORD1;
 };
 
 vs2ps VS(VS_IN input)
@@ -44,7 +45,7 @@ vs2ps VS(VS_IN input)
 	output.PosWVP = mul(PosO, mul(tW,tVP));
 	
 	output.Size = 300.0f;
-	
+	output.Discard = !(PosO.w > 0.5);
     return output;
 }
 
@@ -53,6 +54,9 @@ vs2ps VS(VS_IN input)
 
 float4 PS(vs2ps In): SV_Target
 {
+	if (In.Discard) {
+		discard;
+	}
     float4 col = imageTexture[In.Index];
     return col;
 }
